@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Leaflet.js for map rendering -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <script>
+        var map;
+        var marker;
+
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        function initMap() {
+            // Get latitude and longitude from URL
+            var lat = parseFloat(getQueryParam("lat")) || 36.81897;
+            var lng = parseFloat(getQueryParam("lng")) || 10.1658;
+
+            // Initialize the map with a default view
+            map = L.map('myMap').setView([lat, lng], 13);
+
+            // Add OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Add a marker at the given location
+            marker = L.marker([lat, lng], {draggable: true}).addTo(map);
+        }
+
+        window.onload = initMap;
+    </script>
+
+    <style>
+        html, body { width: 100%; height: 100%; margin: 0; padding: 0; }
+        #myMap { width: 100%; height: 100%; }
+    </style>
+</head>
+<body>
+<div id="myMap"></div>
+</body>
+</html>
