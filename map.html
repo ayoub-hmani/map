@@ -10,28 +10,42 @@
 
     <script>
         var map;
-        var marker;
+        var markers = [];
 
         function getQueryParam(param) {
             const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(param);
+            const value = urlParams.get(param);
+            return value ? value.split(',') : [];
         }
 
         function initMap() {
-            // Get latitude and longitude from URL
-            var lat = parseFloat(getQueryParam("lat")) || 36.81897;
-            var lng = parseFloat(getQueryParam("lng")) || 10.1658;
+            var latlist = getQueryParam("latlist");
+            var longlist = getQueryParam("longlist");
 
-            // Initialize the map with a default view
-            map = L.map('myMap').setView([lat, lng], 13);
+            // Default center location
+            var defaultLat = 36.81897;
+            var defaultLng = 10.1658;
+            var zoomLevel = latlist.length > 0 ? 10 : 7;
+
+            map = L.map('myMap').setView([defaultLat, defaultLng], zoomLevel);
 
             // Add OpenStreetMap tiles
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; OpenStreetMap contributors'
             }).addTo(map);
 
-            // Add a marker at the given location
-            marker = L.marker([lat, lng], {draggable: true}).addTo(map);
+            // Add markers
+            if (latlist.length > 0 && longlist.length > 0) {
+                for (let i = 0; i < latlist.length; i++) {
+                    let lat = parseFloat(latlist[i]);
+                    let lng = parseFloat(longlist[i]);
+
+                    if (!isNaN(lat) && !isNaN(lng)) {
+                        let marker = L.marker([lat, lng]).addTo(map);
+                        markers.push(marker);
+                    }
+                }
+            }
         }
 
         window.onload = initMap;
